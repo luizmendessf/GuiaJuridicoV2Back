@@ -34,7 +34,7 @@ public class Oportunidade {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "JSON")
     private String requirements;
 
     private String salary;

@@ -37,6 +37,7 @@ public class SecurityConfig {
                         // Rotas Públicas: Todos podem acessar o login/registro e ver as vagas.
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/oportunidades/**").permitAll()
+                        .requestMatchers("/api/images/**").permitAll()
 
                         // Rotas de Usuário Autenticado: Qualquer usuário logado pode gerenciar seus favoritos.
                         .requestMatchers("/api/usuarios/me/**").authenticated()
