@@ -93,6 +93,11 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+    }
+
     public void deletarUsuario(Integer id) {
         // Lógica de segurança para impedir que um admin se auto-delete
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

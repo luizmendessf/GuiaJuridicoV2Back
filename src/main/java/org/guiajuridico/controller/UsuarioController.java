@@ -20,6 +20,13 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // ENDPOINT PARA OBTER DADOS DO USUÁRIO LOGADO
+    @GetMapping("/me")
+    public ResponseEntity<Usuario> obterDadosUsuario(@AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = usuarioService.buscarPorEmail(userDetails.getUsername());
+        return ResponseEntity.ok(usuario);
+    }
+
     @GetMapping("/me/favoritos")
     public ResponseEntity<Set<Oportunidade>> listarFavoritos(@AuthenticationPrincipal UserDetails userDetails) {
         Set<Oportunidade> favoritos = usuarioService.listarFavoritos(userDetails.getUsername());

@@ -39,6 +39,10 @@ public class AdminController {
             dto.setId(usuario.getId());
             dto.setNome(usuario.getNome());
             dto.setEmail(usuario.getEmail());
+            // Inclui os roles do usuário
+            dto.setRoles(usuario.getRoles().stream()
+                    .map(role -> role.getNome())
+                    .collect(Collectors.toSet()));
             // Não incluímos a senha ou outros dados sensíveis
             return dto;
         }).collect(Collectors.toList());
