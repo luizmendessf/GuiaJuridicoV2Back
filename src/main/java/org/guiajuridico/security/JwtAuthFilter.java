@@ -51,12 +51,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                // Extract authorities from JWT token
-                List<String> authorities = jwtService.extractClaim(jwt, claims -> claims.get("authorities", List.class));
-                
+                // Extract authorities from JWT token without unchecked conversion
+                List<?> rawAuthorities = jwtService.extractClaim(jwt, claims -> claims.get("authorities", List.class));
+
                 List<GrantedAuthority> grantedAuthorities;
-                if (authorities != null && !authorities.isEmpty()) {
-                    grantedAuthorities = authorities.stream()
+                if (rawAuthorities != null && !rawAuthorities.isEmpty()) {
+                    grantedAuthorities = rawAuthorities.stream()
+                            .map(String::valueOf)
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
                 } else {
