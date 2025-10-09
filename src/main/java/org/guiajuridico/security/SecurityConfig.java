@@ -36,6 +36,7 @@ public class SecurityConfig {
                         // --- REGRAS ESPECÍFICAS PRIMEIRO ---
                         // Rotas Públicas: Todos podem acessar o login/registro e ver as vagas.
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/oportunidades/**").permitAll()
                         .requestMatchers("/api/images/**").permitAll()
@@ -68,7 +69,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
                 "http://127.0.0.1:3000",
-                "https://*.onrender.com"
+                "https://*.onrender.com",
+                "https://*.vercel.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
