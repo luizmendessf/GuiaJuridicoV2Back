@@ -1,5 +1,6 @@
 package org.guiajuridico.service;
 
+import org.guiajuridico.dto.UsuarioUpdateDto;
 import org.guiajuridico.model.Oportunidade;
 import org.guiajuridico.model.Role;
 import org.guiajuridico.model.Usuario;
@@ -118,6 +119,37 @@ public class UsuarioService {
 
         // 4. Salva o usuário com a senha atualizada
         usuarioRepository.save(usuario);
+    }
+
+    public Usuario atualizarDadosUsuario(String emailUsuario, UsuarioUpdateDto updateDto) {
+        // 1. Busca o usuário no banco de dados
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+
+        // 2. Atualiza os dados básicos (nome e celular)
+        if (updateDto.getNome() != null && !updateDto.getNome().trim().isEmpty()) {
+            usuario.setNome(updateDto.getNome().trim());
+        }
+        
+        if (updateDto.getCelular() != null) {
+            usuario.setCelular(updateDto.getCelular().trim());
+        }
+
+        // 3. Se uma nova senha foi fornecida, valida a senha atual e atualiza
+        if (updateDto.getSenhaNova() != null && !updateDto.getSenhaNova().trim().isEmpty()) {
+            if (updateDto.getSenhaAtual() == null || updateDto.getSenhaAtual().trim().isEmpty()) {
+                throw new RuntimeException("Senha atual é obrigatória para alterar a senha!");
+            }
+            
+            if (!passwordEncoder.matches(updateDto.getSenhaAtual(), usuario.getPassword())) {
+                throw new RuntimeException("Senha atual incorreta!");
+            }
+            
+            usuario.setSenha(passwordEncoder.encode(updateDto.getSenhaNova()));
+        }
+
+        // 4. Salva o usuário atualizado
+        return usuarioRepository.save(usuario);
     }
 
     // Gerar token para recuperação de senha

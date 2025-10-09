@@ -1,7 +1,9 @@
 package org.guiajuridico.controller;
 
 import org.guiajuridico.dto.SenhaUpdateRequestDto;
+import org.guiajuridico.dto.UsuarioUpdateDto;
 import org.guiajuridico.model.Oportunidade;
+import org.guiajuridico.model.Usuario;
 import org.guiajuridico.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +46,15 @@ public class UsuarioController {
 
         usuarioService.mudarSenha(userDetails.getUsername(), senhaDto.getSenhaAntiga(), senhaDto.getSenhaNova());
         return ResponseEntity.ok("Senha alterada com sucesso!");
+    }
+
+    // ENDPOINT PARA ATUALIZAR DADOS DO USUÁRIO
+    @PutMapping("/me")
+    public ResponseEntity<Usuario> atualizarDadosUsuario(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody UsuarioUpdateDto updateDto) {
+        
+        Usuario usuarioAtualizado = usuarioService.atualizarDadosUsuario(userDetails.getUsername(), updateDto);
+        return ResponseEntity.ok(usuarioAtualizado);
     }
 }
