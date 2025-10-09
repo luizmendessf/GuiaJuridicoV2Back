@@ -32,6 +32,19 @@ build/
 ### VS Code ###
 .vscode/
 
+### Production Configuration ###
+# Arquivos de configuração com credenciais sensíveis
+application-prod.properties
+application-production.properties
+*.env
+.env
+.env.local
+.env.production
+
+# Logs de aplicação
+logs/
+*.log
+
 # Compiled class file
 *.class
 
