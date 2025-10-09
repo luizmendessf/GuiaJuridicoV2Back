@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // --- REGRAS ESPECÍFICAS PRIMEIRO ---
                         // Rotas Públicas: Todos podem acessar o login/registro e ver as vagas.
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/oportunidades/**").permitAll()
                         .requestMatchers("/api/images/**").permitAll()
