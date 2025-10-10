@@ -32,6 +32,14 @@ public class OportunidadeController {
         return ResponseEntity.ok(oportunidades);
     }
 
+    // Endpoint para obter uma oportunidade por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Oportunidade> obterPorId(@PathVariable Integer id) {
+        return oportunidadeService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     // Endpoint para CRIAR uma nova oportunidade
     @PostMapping
     public ResponseEntity<Oportunidade> criarOportunidade(@RequestBody Oportunidade oportunidade) {

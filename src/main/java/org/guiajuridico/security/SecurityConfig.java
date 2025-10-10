@@ -70,7 +70,9 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://127.0.0.1:3000",
                 "https://*.onrender.com",
-                "https://*.vercel.app"
+                "https://*.vercel.app",
+                "https://guiajuridico.org",
+                "https://www.guiajuridico.org"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
