@@ -57,6 +57,10 @@ public class OportunidadeService {
         oportunidadeRepository.deleteById(id);
     }
 
+    public Optional<Oportunidade> findById(Integer id) {
+        return oportunidadeRepository.findById(id);
+    }
+
     public Optional<Oportunidade> atualizarOportunidade(Integer id, Oportunidade oportunidadeAtualizada) {
         return oportunidadeRepository.findById(id).map(oportunidadeExistente -> {
             oportunidadeExistente.setTitle(oportunidadeAtualizada.getTitle());
