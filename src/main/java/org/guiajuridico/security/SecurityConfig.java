@@ -68,7 +68,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
+                "http://localhost:3001",
                 "http://127.0.0.1:3000",
+                "http://127.0.0.1:3001",
                 "https://*.onrender.com",
                 "https://*.vercel.app",
                 "https://guiajuridico.org",
