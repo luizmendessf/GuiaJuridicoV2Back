@@ -1,10 +1,10 @@
 # Estágio 1: Build da aplicação com Maven
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY GuiaJuridicoBack/pom.xml ./pom.xml
+RUN mvn -q -f pom.xml dependency:go-offline
+COPY GuiaJuridicoBack/src ./src
+RUN mvn -q -f pom.xml clean package -DskipTests
 
 # Estágio 2: Criação da imagem final de execução
 FROM eclipse-temurin:21-jre-jammy
