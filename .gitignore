@@ -1,0 +1,16 @@
+# Maven build outputs
+target/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
+
+# Local configs
+application-local.properties
