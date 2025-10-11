@@ -2,3 +2,4 @@ org/guiajuridico/security/JwtAuthFilter.class
 org/guiajuridico/security/SecurityConfig.class
 org/guiajuridico/service/JwtService.class
 org/guiajuridico/GuiaJuridicoBackApplication.class
+org/guiajuridico/controller/OportunidadeController.class
