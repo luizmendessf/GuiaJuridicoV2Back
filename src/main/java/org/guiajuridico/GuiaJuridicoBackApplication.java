@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class GuiaJuridicoBackApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(GuiaJuridicoBackApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(GuiaJuridicoBackApplication.class, args);
+    }
 }

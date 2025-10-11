@@ -51,7 +51,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                // Extract authorities from JWT token without unchecked conversion
                 List<?> rawAuthorities = jwtService.extractClaim(jwt, claims -> claims.get("authorities", List.class));
 
                 List<GrantedAuthority> grantedAuthorities;
@@ -61,7 +60,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
                 } else {
-                    // Fallback to user's actual authorities if JWT doesn't contain them
                     grantedAuthorities = userDetails.getAuthorities().stream().collect(Collectors.toList());
                 }
                 
