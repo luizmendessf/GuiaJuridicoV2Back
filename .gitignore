@@ -1,31 +1,17 @@
-<<<<<<< HEAD
-# Maven build outputs
-target/
-=======
 # Maven/Java
 target/
 *.log
->>>>>>> 7b0b384 (V2Back: add main class, global exception handler, oportunidades controller, application.properties; upgrade JJWT; enable env-configurable port/JWT secret)
 
 # IDEs
 .idea/
 *.iml
-<<<<<<< HEAD
 .vscode/
-
-# OS files
-.DS_Store
-
-# Logs
-*.log
-
-# Local configs
-application-local.properties
-=======
 .classpath
 .project
 .settings/
 
 # SO
 .DS_Store
->>>>>>> 7b0b384 (V2Back: add main class, global exception handler, oportunidades controller, application.properties; upgrade JJWT; enable env-configurable port/JWT secret)
+
+# Local configs
+application-local.properties
