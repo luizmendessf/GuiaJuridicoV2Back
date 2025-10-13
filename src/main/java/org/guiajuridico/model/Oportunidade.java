@@ -44,7 +44,6 @@ public class Oportunidade {
     private String applicationLink;
 
     @Column(name = "data_criacao", updatable = false, insertable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dataCriacao;
 
     @ManyToOne(fetch = FetchType.LAZY)

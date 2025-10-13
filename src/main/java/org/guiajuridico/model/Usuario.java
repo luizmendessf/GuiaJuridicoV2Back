@@ -37,7 +37,6 @@ public class Usuario implements UserDetails {
     private String celular;
 
     @Column(name = "data_criacao", updatable = false, insertable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dataCriacao;
 
     // CAMPO PARA OS FAVORITOS

@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Component
 public class DataLoader implements CommandLineRunner {
+    private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
 
     @Autowired
     private RoleRepository roleRepository;
@@ -38,21 +41,21 @@ public class DataLoader implements CommandLineRunner {
             Role roleUsuario = new Role();
             roleUsuario.setNome("ROLE_USUARIO");
             roleRepository.save(roleUsuario);
-            System.out.println("Role ROLE_USUARIO criada.");
+            log.info("Role {} criada.", "ROLE_USUARIO");
         }
 
         if (roleRepository.findByNome("ROLE_ORGANIZADOR") == null) {
             Role roleOrganizador = new Role();
             roleOrganizador.setNome("ROLE_ORGANIZADOR");
             roleRepository.save(roleOrganizador);
-            System.out.println("Role ROLE_ORGANIZADOR criada.");
+            log.info("Role {} criada.", "ROLE_ORGANIZADOR");
         }
 
         if (roleRepository.findByNome("ROLE_ADMIN") == null) {
             Role roleAdmin = new Role();
             roleAdmin.setNome("ROLE_ADMIN");
             roleRepository.save(roleAdmin);
-            System.out.println("Role ROLE_ADMIN criada.");
+            log.info("Role {} criada.", "ROLE_ADMIN");
         }
     }
 
@@ -74,7 +77,7 @@ public class DataLoader implements CommandLineRunner {
             admin.setRoles(roles);
             
             usuarioRepository.save(admin);
-            System.out.println("Usuário admin criado: " + emailAdmin + " / senha: admin123");
+            log.info("Usuário admin criado: {}.", emailAdmin);
         }
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +25,7 @@ import java.util.UUID;
 
 @Service
 public class UsuarioService {
+    private static final Logger log = LoggerFactory.getLogger(UsuarioService.class);
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -79,7 +82,14 @@ public class UsuarioService {
 
         // Busca todas as roles correspondentes aos nomes fornecidos
         Set<Role> novasRoles = nomesDasRoles.stream()
-                .map(nomeRole -> roleRepository.findByNome(nomeRole))
+                .map(nomeRole -> {
+                    Role role = roleRepository.findByNome(nomeRole);
+                    if (role == null) {
+                        log.warn("Role não encontrada: {}", nomeRole);
+                    }
+                    return role;
+                })
+                .filter(r -> r != null)
                 .collect(Collectors.toSet());
 
         // Define as novas roles para o usuário
@@ -171,7 +181,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         // Em uma aplicação real, aqui você enviaria o email com o token
-        System.out.println("Token de reset para " + email + ": " + token);
+        log.info("Token de reset gerado para {}", email);
 
         return token;
     }
