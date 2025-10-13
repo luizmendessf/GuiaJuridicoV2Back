@@ -10,8 +10,11 @@ target/
 .project
 .settings/
 
-# SO
+# OS files
 .DS_Store
+
+# Logs
+*.log
 
 # Local configs
 application-local.properties

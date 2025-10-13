@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "titulo": "Vaga de Estágio em Direito",
+    "descricao": "Estágio em escritório de advocacia na área cível.",
+    "local": "São Paulo",
+    "remoto": true
+  },
+  {
+    "id": 2,
+    "titulo": "Concursos Públicos Abertos",
+    "descricao": "Lista de concursos atuais na área jurídica.",
+    "local": "Brasil",
+    "remoto": false
+  }
+]
