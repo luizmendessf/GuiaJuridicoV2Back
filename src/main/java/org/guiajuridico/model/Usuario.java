@@ -2,8 +2,6 @@ package org.guiajuridico.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +15,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
-@Setter
 public class Usuario implements UserDetails {
 
     @Id
@@ -79,4 +75,46 @@ public class Usuario implements UserDetails {
     private String resetPasswordToken;
 
     private LocalDateTime resetPasswordTokenExpiry;
+
+    // Implementações padrão de UserDetails
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+    public String getCelular() { return celular; }
+    public void setCelular(String celular) { this.celular = celular; }
+    public Timestamp getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(Timestamp dataCriacao) { this.dataCriacao = dataCriacao; }
+    public Set<Oportunidade> getOportunidadesSalvas() { return oportunidadesSalvas; }
+    public void setOportunidadesSalvas(Set<Oportunidade> oportunidadesSalvas) { this.oportunidadesSalvas = oportunidadesSalvas; }
+    public Set<Role> getRoles() { return roles; }
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
+    public String getResetPasswordToken() { return resetPasswordToken; }
+    public void setResetPasswordToken(String resetPasswordToken) { this.resetPasswordToken = resetPasswordToken; }
+    public LocalDateTime getResetPasswordTokenExpiry() { return resetPasswordTokenExpiry; }
+    public void setResetPasswordTokenExpiry(LocalDateTime resetPasswordTokenExpiry) { this.resetPasswordTokenExpiry = resetPasswordTokenExpiry; }
 }

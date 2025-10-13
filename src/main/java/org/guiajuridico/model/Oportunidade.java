@@ -2,16 +2,12 @@ package org.guiajuridico.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "oportunidades")
-@Getter
-@Setter
 public class Oportunidade {
 
     @Id
@@ -50,4 +46,35 @@ public class Oportunidade {
     @JoinColumn(name = "criado_por_id")
     @JsonIgnore
     private Usuario criadoPor;
+
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getCompany() { return company; }
+    public void setCompany(String company) { this.company = company; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+    public Date getOpeningDate() { return openingDate; }
+    public void setOpeningDate(Date openingDate) { this.openingDate = openingDate; }
+    public Date getClosingDate() { return closingDate; }
+    public void setClosingDate(Date closingDate) { this.closingDate = closingDate; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getRequirements() { return requirements; }
+    public void setRequirements(String requirements) { this.requirements = requirements; }
+    public String getSalary() { return salary; }
+    public void setSalary(String salary) { this.salary = salary; }
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
+    public String getApplicationLink() { return applicationLink; }
+    public void setApplicationLink(String applicationLink) { this.applicationLink = applicationLink; }
+    public Timestamp getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(Timestamp dataCriacao) { this.dataCriacao = dataCriacao; }
+    public Usuario getCriadoPor() { return criadoPor; }
+    public void setCriadoPor(Usuario criadoPor) { this.criadoPor = criadoPor; }
 }
