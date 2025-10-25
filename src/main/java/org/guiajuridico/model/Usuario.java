@@ -42,6 +42,7 @@ public class Usuario implements UserDetails {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "oportunidade_id")
     )
+    @JsonIgnore
     private Set<Oportunidade> oportunidadesSalvas = new HashSet<>();
 
     // DECLARAÇÃO ÚNICA E CORRETA DO CAMPO ROLES
@@ -56,7 +57,7 @@ public class Usuario implements UserDetails {
     // MÉTODOS OBRIGATÓRIOS DO USERDETAILS
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
+        // Role.nome já contém o prefixo ROLE_ de acordo com o DataLoader e uso no sistema
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getNome()))
                 .collect(Collectors.toList());
