@@ -53,4 +53,12 @@ public class OportunidadeController {
         oportunidadeService.deletarOportunidade(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Endpoint para BUSCAR uma oportunidade por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Oportunidade> buscarPorId(@PathVariable Integer id) {
+        return oportunidadeService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
