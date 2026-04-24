@@ -38,6 +38,11 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/oportunidades/**").permitAll()
+                        .requestMatchers("/api/blog/admin/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/blog").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/blog/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/blog/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/blog/**").permitAll()
                         .requestMatchers("/api/images/**").permitAll()
 
                         // Rotas de Usuário Autenticado: Qualquer usuário logado pode gerenciar seus favoritos.

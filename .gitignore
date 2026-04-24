@@ -45,6 +45,9 @@ application-production.properties
 logs/
 *.log
 
+# Uploads directory (runtime files)
+uploads/
+
 # Compiled class file
 *.class
 
