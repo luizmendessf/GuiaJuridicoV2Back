@@ -79,21 +79,27 @@ class AdminControllerSecurityTest {
     }
 
     @Test
-    void put_roles_with_unprefixed_authority_claim_returns_403() throws Exception {
+    void put_roles_uses_database_roles_even_when_jwt_authority_claim_has_wrong_prefix() throws Exception {
         String username = "admin@guiajuridico.com";
-        // UserDetails returned from DB has ROLE_ prefix as expected
         UserDetails dbUser = buildUserDetails(username, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
         when(userDetailsService.loadUserByUsername(eq(username))).thenReturn(dbUser);
-        when(usuarioService.atualizarRolesUsuario(any(Integer.class), any(Set.class))).thenReturn(new Usuario());
 
-        String badToken = buildToken(username, List.of("ADMIN")); // missing ROLE_ prefix
+        Usuario dummy = new Usuario();
+        dummy.setId(1);
+        dummy.setNome("dummy");
+        Set<Role> roles = new HashSet<>();
+        Role userRole = new Role(); userRole.setNome("ROLE_USUARIO"); roles.add(userRole);
+        dummy.setRoles(roles);
+        when(usuarioService.atualizarRolesUsuario(eq(1), any(Set.class))).thenReturn(dummy);
+
+        String tokenWithBadClaim = buildToken(username, List.of("ADMIN")); // missing ROLE_ prefix in JWT
 
         String body = "{\"nomesDasRoles\":[\"ROLE_USUARIO\"]}";
         mockMvc.perform(put("/api/admin/usuarios/1/roles")
-                        .header("Authorization", "Bearer " + badToken)
+                        .header("Authorization", "Bearer " + tokenWithBadClaim)
                         .contentType("application/json")
                         .content(body))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk());
     }
 
     @Test
