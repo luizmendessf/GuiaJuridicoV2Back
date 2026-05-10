@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -51,20 +50,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                // Extract authorities from JWT token without unchecked conversion
-                List<?> rawAuthorities = jwtService.extractClaim(jwt, claims -> claims.get("authorities", List.class));
+                // Use DB roles after JWT validates identity (JWT claims can be stale vs usuario_roles).
+                List<GrantedAuthority> grantedAuthorities =
+                        userDetails.getAuthorities().stream().collect(Collectors.toList());
 
-                List<GrantedAuthority> grantedAuthorities;
-                if (rawAuthorities != null && !rawAuthorities.isEmpty()) {
-                    grantedAuthorities = rawAuthorities.stream()
-                            .map(String::valueOf)
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList());
-                } else {
-                    // Fallback to user's actual authorities if JWT doesn't contain them
-                    grantedAuthorities = userDetails.getAuthorities().stream().collect(Collectors.toList());
-                }
-                
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
