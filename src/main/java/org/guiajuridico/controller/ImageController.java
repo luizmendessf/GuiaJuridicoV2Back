@@ -1,5 +1,6 @@
 package org.guiajuridico.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -26,7 +27,11 @@ import java.time.Instant;
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private final Path uploadDir = Paths.get("uploads/images");
+    private final Path uploadDir;
+
+    public ImageController(@Value("${image.upload.dir}") String uploadDirString) {
+        this.uploadDir = Paths.get(uploadDirString);
+    }
 
     @GetMapping("/{imageName}")
     public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
