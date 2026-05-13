@@ -67,6 +67,14 @@ public class OportunidadeService {
             oportunidadeExistente.setCompany(oportunidadeAtualizada.getCompany());
             oportunidadeExistente.setLocation(oportunidadeAtualizada.getLocation());
             oportunidadeExistente.setDescription(oportunidadeAtualizada.getDescription());
+            oportunidadeExistente.setType(oportunidadeAtualizada.getType());
+            oportunidadeExistente.setImage(oportunidadeAtualizada.getImage());
+            oportunidadeExistente.setRequirements(oportunidadeAtualizada.getRequirements());
+            oportunidadeExistente.setSalary(oportunidadeAtualizada.getSalary());
+            oportunidadeExistente.setApplicationLink(oportunidadeAtualizada.getApplicationLink());
+            oportunidadeExistente.setOpeningDate(oportunidadeAtualizada.getOpeningDate());
+            oportunidadeExistente.setClosingDate(oportunidadeAtualizada.getClosingDate());
+            oportunidadeExistente.setStatus(oportunidadeAtualizada.getStatus());
 
             return oportunidadeRepository.save(oportunidadeExistente);
         });
