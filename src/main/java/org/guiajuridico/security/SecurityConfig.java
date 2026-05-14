@@ -55,11 +55,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/pdfs/**").permitAll()
                         .requestMatchers("/api/images/**").permitAll()
 
-                        // Newsletter (público) + webhook Brevo
-                        .requestMatchers(HttpMethod.POST, "/api/public/webhooks/brevo").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/public/newsletter/subscribe").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/public/newsletter/unsubscribe").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/public/newsletter/unsubscribe").permitAll()
+                        // Newsletter, webhook Brevo e demais rotas públicas sob /api/public/
+                        .requestMatchers("/api/public/**").permitAll()
 
                         // Rotas de Usuário Autenticado: Qualquer usuário logado pode gerenciar seus favoritos.
                         .requestMatchers("/api/usuarios/me/**").authenticated()
