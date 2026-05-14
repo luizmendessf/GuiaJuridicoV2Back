@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,7 +43,23 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/blog/**").hasAnyRole("ORGANIZADOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/blog/**").hasAnyRole("ORGANIZADOR", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/blog/**").permitAll()
+                        // Biblioteca: GET público (lista + detalhe); /admin e mutações exigem ORGANIZADOR/ADMIN
+                        // Incluir /admin sem segmento extra (alguns PathPatterns não casam só com /admin/**).
+                        .requestMatchers("/api/biblioteca/admin", "/api/biblioteca/admin/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/biblioteca").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/biblioteca/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/biblioteca/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/biblioteca", "/api/biblioteca/**").permitAll()
+                        // Biblioteca: GET público; upload de PDF no mesmo modelo que imagens (permitAll no ficheiro).
+                        // Quem pode usar o fluxo fica na UI (botão / rascunhos); criar/editar documento continua com hasRole.
+                        .requestMatchers("/api/pdfs/**").permitAll()
                         .requestMatchers("/api/images/**").permitAll()
+
+                        // Newsletter (público) + webhook Brevo
+                        .requestMatchers(HttpMethod.POST, "/api/public/webhooks/brevo").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/public/newsletter/subscribe").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/public/newsletter/unsubscribe").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/public/newsletter/unsubscribe").permitAll()
 
                         // Rotas de Usuário Autenticado: Qualquer usuário logado pode gerenciar seus favoritos.
                         .requestMatchers("/api/usuarios/me/**").authenticated()
@@ -62,7 +78,8 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                // JWT antes do anónimo para o Bearer substituir o contexto anónimo nas rotas protegidas.
+                .addFilterBefore(jwtAuthFilter, AnonymousAuthenticationFilter.class);
 
         return http.build();
     }
