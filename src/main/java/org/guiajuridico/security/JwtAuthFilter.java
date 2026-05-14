@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.guiajuridico.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +37,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
+        // Webhook Brevo envia Bearer com token próprio (não JWT): não interpretar como sessão.
+        String servletPath = request.getServletPath();
+        if (servletPath != null && servletPath.startsWith("/api/public/webhooks/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
@@ -47,7 +56,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        Authentication existing = SecurityContextHolder.getContext().getAuthentication();
+        boolean podeAplicarJwt =
+                existing == null || existing instanceof AnonymousAuthenticationToken;
+
+        if (userEmail != null && podeAplicarJwt) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 // Use DB roles after JWT validates identity (JWT claims can be stale vs usuario_roles).
