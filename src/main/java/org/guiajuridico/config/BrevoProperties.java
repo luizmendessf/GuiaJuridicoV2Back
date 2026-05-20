@@ -8,6 +8,9 @@ public class BrevoProperties {
     private String apiKey = "";
     private long newsletterListId = 5L;
     private String webhookSecret = "";
+    /** Remetente transacional (deve estar verificado em Brevo → Senders). */
+    private String senderEmail = "";
+    private String senderName = "Guia Jurídico";
 
     public String getApiKey() {
         return apiKey;
@@ -39,5 +42,25 @@ public class BrevoProperties {
 
     public boolean hasWebhookSecret() {
         return webhookSecret != null && !webhookSecret.isBlank();
+    }
+
+    public String getSenderEmail() {
+        return senderEmail == null ? "" : senderEmail.trim();
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getSenderName() {
+        return senderName == null || senderName.isBlank() ? "Guia Jurídico" : senderName.trim();
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public boolean canSendTransactionalEmail() {
+        return hasApiKey() && !getSenderEmail().isBlank();
     }
 }

@@ -41,6 +41,9 @@ public class UsuarioService {
     @Autowired
     private OportunidadeRepository oportunidadeRepository;
 
+    @Autowired
+    private BrevoTransactionalEmailService brevoTransactionalEmailService;
+
     public Usuario autenticarOuRegistrarComGoogle(GoogleUserInfo googleUser) {
         return usuarioRepository.findByGoogleId(googleUser.googleId())
                 .orElseGet(() -> vincularOuCriarUsuarioGoogle(googleUser));
@@ -210,25 +213,33 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
 
-        // Em uma aplicação real, aqui você enviaria o email com o token
-        log.info("Token de reset gerado para {}", email);
+        brevoTransactionalEmailService.sendPasswordResetEmail(
+                usuario.getEmail(),
+                usuario.getNome(),
+                token
+        );
 
         return token;
     }
 
     // NOVO MÉTODO: Redefinir a senha usando o token
     public void resetarSenha(String token, String novaSenha) {
-        // Busca o usuário pelo token de redefinição
-        Usuario usuario = usuarioRepository.findByResetPasswordToken(token)
-                .orElseThrow(() -> new RuntimeException("Token inválido ou não encontrado."));
-
-        // Verifica se o token não expirou
-        if (usuario.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado!");
+        if (token == null || token.isBlank()) {
+            throw new IllegalArgumentException("Token inválido ou não encontrado.");
+        }
+        if (novaSenha == null || novaSenha.isBlank()) {
+            throw new IllegalArgumentException("Nova senha é obrigatória.");
         }
 
-        // Criptografa e define a nova senha
-        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        Usuario usuario = usuarioRepository.findByResetPasswordToken(token.trim())
+                .orElseThrow(() -> new IllegalArgumentException("Token inválido ou não encontrado."));
+
+        if (usuario.getResetPasswordTokenExpiry() == null
+                || usuario.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Token expirado. Solicite um novo link.");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha.trim()));
 
         // Limpa os campos do token de redefinição
         usuario.setResetPasswordToken(null);
