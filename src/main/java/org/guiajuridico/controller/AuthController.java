@@ -1,13 +1,16 @@
 package org.guiajuridico.controller;
 
 import org.guiajuridico.dto.CadastroUsuarioDto;
+import org.guiajuridico.dto.GoogleAuthRequestDto;
 import org.guiajuridico.dto.LoginRequestDto;
 import org.guiajuridico.dto.LoginResponseDto;
 import org.guiajuridico.model.Usuario;
 import org.guiajuridico.repository.UsuarioRepository;
+import org.guiajuridico.service.GoogleTokenVerifierService;
 import org.guiajuridico.service.JwtService;
 import org.guiajuridico.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +36,9 @@ public class AuthController {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private GoogleTokenVerifierService googleTokenVerifierService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registrarUsuario(@RequestBody CadastroUsuarioDto cadastroDto) {
@@ -63,6 +69,20 @@ public class AuthController {
 
         // Retorna o token
         return ResponseEntity.ok(new LoginResponseDto(jwtToken));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> loginComGoogle(@RequestBody GoogleAuthRequestDto request) {
+        try {
+            var googleUser = googleTokenVerifierService.verify(request.getCredential());
+            var usuario = usuarioService.autenticarOuRegistrarComGoogle(googleUser);
+            var jwtToken = jwtService.generateToken(usuario);
+            return ResponseEntity.ok(new LoginResponseDto(jwtToken));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     //Solicitar redefinição de senha
