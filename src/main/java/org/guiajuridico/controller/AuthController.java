@@ -99,12 +99,12 @@ public class AuthController {
         }
         try {
             usuarioService.gerarResetToken(email);
-        } catch (RuntimeException e) {
-            // E-mail inexistente: mesma resposta genérica (não revelar cadastro).
         } catch (IllegalStateException e) {
             log.error("Falha ao enviar e-mail de reset para {}", email, e);
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .body("Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos.");
+        } catch (RuntimeException e) {
+            // E-mail inexistente: mesma resposta genérica (não revelar cadastro).
         }
         return ResponseEntity.ok("Se um usuário com este email existir, um link de redefinição foi enviado.");
     }
