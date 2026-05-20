@@ -41,18 +41,19 @@ public class AuthController {
     private GoogleTokenVerifierService googleTokenVerifierService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registrarUsuario(@RequestBody CadastroUsuarioDto cadastroDto) {
-        // Converte o DTO para a entidade Usuario
-        Usuario novoUsuario = new Usuario();
-        novoUsuario.setNome(cadastroDto.getNome());
-        novoUsuario.setEmail(cadastroDto.getEmail());
-        novoUsuario.setSenha(cadastroDto.getSenha());
-        novoUsuario.setCelular(cadastroDto.getCelular());
+    public ResponseEntity<?> registrarUsuario(@RequestBody CadastroUsuarioDto cadastroDto) {
+        try {
+            Usuario novoUsuario = new Usuario();
+            novoUsuario.setNome(cadastroDto.getNome());
+            novoUsuario.setEmail(cadastroDto.getEmail());
+            novoUsuario.setSenha(cadastroDto.getSenha());
+            novoUsuario.setCelular(cadastroDto.getCelular());
 
-        // Chama o serviço para criar o usuário (que já tem a lógica de criptografia e roles)
-        usuarioService.criarUsuario(novoUsuario);
-
-        return ResponseEntity.ok("Usuário registrado com sucesso!");
+            usuarioService.criarUsuario(novoUsuario);
+            return ResponseEntity.ok("Usuário registrado com sucesso!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     //ENDPOINT DE LOGIN

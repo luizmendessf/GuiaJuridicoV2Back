@@ -61,8 +61,7 @@ public class UsuarioService {
         novo.setNome(googleUser.name());
         novo.setEmail(googleUser.email());
         novo.setGoogleId(googleUser.googleId());
-        // Senha obrigatória no MySQL (NOT NULL): valor aleatório; login só via Google até redefinir senha.
-        novo.setSenha(passwordEncoder.encode("GOOGLE_OAUTH_" + UUID.randomUUID()));
+        novo.setSenha(null);
 
         Role userRole = roleRepository.findByNome("ROLE_USUARIO");
         novo.setRoles(new HashSet<>(Collections.singletonList(userRole)));
@@ -70,8 +69,10 @@ public class UsuarioService {
     }
 
     public Usuario criarUsuario(Usuario usuario) {
-        // Lógica de Negócio 1: Criptografar a senha
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
+            throw new IllegalArgumentException("Senha é obrigatória no cadastro.");
+        }
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha().trim()));
 
         if (usuario.getRoles() == null || usuario.getRoles().isEmpty()) {
             // Lógica de Negócio 2: Atribuir a permissão padrão "ROLE_USUARIO"
