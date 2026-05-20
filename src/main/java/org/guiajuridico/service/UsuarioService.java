@@ -1,5 +1,6 @@
 package org.guiajuridico.service;
 
+import org.guiajuridico.dto.GoogleUserInfo;
 import org.guiajuridico.dto.UsuarioUpdateDto;
 import org.guiajuridico.model.Oportunidade;
 import org.guiajuridico.model.Role;
@@ -39,6 +40,33 @@ public class UsuarioService {
     // LINHA ADICIONADA PARA CORRIGIR O ERRO
     @Autowired
     private OportunidadeRepository oportunidadeRepository;
+
+    public Usuario autenticarOuRegistrarComGoogle(GoogleUserInfo googleUser) {
+        return usuarioRepository.findByGoogleId(googleUser.googleId())
+                .orElseGet(() -> vincularOuCriarUsuarioGoogle(googleUser));
+    }
+
+    private Usuario vincularOuCriarUsuarioGoogle(GoogleUserInfo googleUser) {
+        var existente = usuarioRepository.findByEmail(googleUser.email());
+        if (existente.isPresent()) {
+            Usuario usuario = existente.get();
+            if (usuario.getGoogleId() != null && !usuario.getGoogleId().equals(googleUser.googleId())) {
+                throw new RuntimeException("Este email já está vinculado a outra conta Google.");
+            }
+            usuario.setGoogleId(googleUser.googleId());
+            return usuarioRepository.save(usuario);
+        }
+
+        Usuario novo = new Usuario();
+        novo.setNome(googleUser.name());
+        novo.setEmail(googleUser.email());
+        novo.setGoogleId(googleUser.googleId());
+        novo.setSenha(null);
+
+        Role userRole = roleRepository.findByNome("ROLE_USUARIO");
+        novo.setRoles(new HashSet<>(Collections.singletonList(userRole)));
+        return usuarioRepository.save(novo);
+    }
 
     public Usuario criarUsuario(Usuario usuario) {
         // Lógica de Negócio 1: Criptografar a senha

@@ -27,8 +27,11 @@ public class Usuario implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String senha;
+
+    @Column(name = "google_id", unique = true)
+    private String googleId;
 
     private String celular;
 
@@ -106,6 +109,8 @@ public class Usuario implements UserDetails {
     public void setEmail(String email) { this.email = email; }
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+    public String getGoogleId() { return googleId; }
+    public void setGoogleId(String googleId) { this.googleId = googleId; }
     public String getCelular() { return celular; }
     public void setCelular(String celular) { this.celular = celular; }
     public Timestamp getDataCriacao() { return dataCriacao; }
