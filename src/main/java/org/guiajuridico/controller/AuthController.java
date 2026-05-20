@@ -9,6 +9,8 @@ import org.guiajuridico.repository.UsuarioRepository;
 import org.guiajuridico.service.GoogleTokenVerifierService;
 import org.guiajuridico.service.JwtService;
 import org.guiajuridico.service.UsuarioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import org.guiajuridico.dto.ResetPasswordRequestDto;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private UsuarioService usuarioService;
@@ -89,20 +93,29 @@ public class AuthController {
     //Solicitar redefinição de senha
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequestDto request) {
-        try {
-            usuarioService.gerarResetToken(request.getEmail());
-        } catch (RuntimeException e) {
-            // Captura a exceção "Usuário não encontrado", mas não faz nada com ela.
-            // O objetivo é que o fluxo continue e a mesma mensagem seja enviada.
+        String email = request.getEmail() == null ? "" : request.getEmail().trim();
+        if (email.isBlank()) {
+            return ResponseEntity.badRequest().body("Informe um e-mail válido.");
         }
-        // Retorna sempre a mesma mensagem genérica, independentemente de o email existir ou não
+        try {
+            usuarioService.gerarResetToken(email);
+        } catch (RuntimeException e) {
+            // E-mail inexistente: mesma resposta genérica (não revelar cadastro).
+        } catch (IllegalStateException e) {
+            log.error("Falha ao enviar e-mail de reset para {}", email, e);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos.");
+        }
         return ResponseEntity.ok("Se um usuário com este email existir, um link de redefinição foi enviado.");
     }
 
-    // Efetivar a redefinição de senha
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequestDto request) {
-        usuarioService.resetarSenha(request.getToken(), request.getNovaSenha());
-        return ResponseEntity.ok("Senha redefinida com sucesso!");
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequestDto request) {
+        try {
+            usuarioService.resetarSenha(request.getToken(), request.getNovaSenha());
+            return ResponseEntity.ok("Senha redefinida com sucesso!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
