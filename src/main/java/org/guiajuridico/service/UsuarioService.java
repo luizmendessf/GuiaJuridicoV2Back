@@ -61,7 +61,8 @@ public class UsuarioService {
         novo.setNome(googleUser.name());
         novo.setEmail(googleUser.email());
         novo.setGoogleId(googleUser.googleId());
-        novo.setSenha(null);
+        // Senha obrigatória no MySQL (NOT NULL): valor aleatório; login só via Google até redefinir senha.
+        novo.setSenha(passwordEncoder.encode("GOOGLE_OAUTH_" + UUID.randomUUID()));
 
         Role userRole = roleRepository.findByNome("ROLE_USUARIO");
         novo.setRoles(new HashSet<>(Collections.singletonList(userRole)));
