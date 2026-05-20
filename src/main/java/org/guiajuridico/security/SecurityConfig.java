@@ -32,6 +32,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // Permite embed de PDFs/imagens no iframe do front (origens distintas em dev e produção).
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "frame-ancestors 'self' http://localhost:3000 http://127.0.0.1:3000 "
+                                        + "http://localhost:5173 http://127.0.0.1:5173 "
+                                        + "https://guiajuridico.org https://www.guiajuridico.org"
+                        ))
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         // --- REGRAS ESPECÍFICAS PRIMEIRO ---
                         // Rotas Públicas: Todos podem acessar o login/registro e ver as vagas.
@@ -50,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/biblioteca/**").hasAnyRole("ORGANIZADOR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/biblioteca/**").hasAnyRole("ORGANIZADOR", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/biblioteca", "/api/biblioteca/**").permitAll()
-                        // Biblioteca: GET público; upload de PDF no mesmo modelo que imagens (permitAll no ficheiro).
+                        // Biblioteca: GET público; upload de PDF no mesmo modelo que imagens (permitAll no arquivo).
                         // Quem pode usar o fluxo fica na UI (botão / rascunhos); criar/editar documento continua com hasRole.
                         .requestMatchers("/api/pdfs/**").permitAll()
                         .requestMatchers("/api/images/**").permitAll()
@@ -87,6 +96,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
                 "http://127.0.0.1:3000",
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
                 "https://guiajuridico.org",
                 "https://www.guiajuridico.org"
         ));
