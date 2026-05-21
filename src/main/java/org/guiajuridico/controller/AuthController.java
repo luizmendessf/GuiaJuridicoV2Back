@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 import org.guiajuridico.dto.ForgotPasswordRequestDto;
 import org.guiajuridico.dto.ResetPasswordRequestDto;
 
@@ -45,13 +46,13 @@ public class AuthController {
     private GoogleTokenVerifierService googleTokenVerifierService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registrarUsuario(@RequestBody CadastroUsuarioDto cadastroDto) {
+    public ResponseEntity<?> registrarUsuario(@Valid @RequestBody CadastroUsuarioDto cadastroDto) {
         try {
             Usuario novoUsuario = new Usuario();
-            novoUsuario.setNome(cadastroDto.getNome());
-            novoUsuario.setEmail(cadastroDto.getEmail());
+            novoUsuario.setNome(cadastroDto.getNome().trim());
+            novoUsuario.setEmail(cadastroDto.getEmail().trim().toLowerCase());
             novoUsuario.setSenha(cadastroDto.getSenha());
-            novoUsuario.setCelular(cadastroDto.getCelular());
+            novoUsuario.setCelular(cadastroDto.getCelular().trim());
 
             usuarioService.criarUsuario(novoUsuario);
             return ResponseEntity.ok("Usuário registrado com sucesso!");
