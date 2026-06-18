@@ -7,6 +7,7 @@ import org.guiajuridico.model.BlogArticle;
 import org.guiajuridico.model.Usuario;
 import org.guiajuridico.repository.BlogArticleRepository;
 import org.guiajuridico.repository.UsuarioRepository;
+import org.guiajuridico.util.BlogHtmlSanitizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -74,7 +75,7 @@ public class BlogArticleService {
         article.setTitle(dto.getTitle().trim());
         article.setSubtitle(dto.getSubtitle().trim());
         article.setImagePath(isBlank(dto.getImagePath()) ? null : dto.getImagePath().trim());
-        article.setContent(dto.getContent());
+        article.setContent(BlogHtmlSanitizer.sanitize(dto.getContent()));
         article.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
         article.setAuthorUser(author);
 
@@ -101,7 +102,7 @@ public class BlogArticleService {
         article.setTitle(dto.getTitle().trim());
         article.setSubtitle(dto.getSubtitle().trim());
         article.setImagePath(isBlank(dto.getImagePath()) ? null : dto.getImagePath().trim());
-        article.setContent(dto.getContent());
+        article.setContent(BlogHtmlSanitizer.sanitize(dto.getContent()));
         article.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
         article.setAuthorUser(author);
 
