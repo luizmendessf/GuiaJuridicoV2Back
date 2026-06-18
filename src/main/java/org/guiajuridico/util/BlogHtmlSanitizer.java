@@ -10,8 +10,10 @@ public final class BlogHtmlSanitizer {
     private static final Safelist BLOG_CONTENT_SAFELIST = Safelist.relaxed()
             .addTags("h2", "h3", "span")
             .addAttributes("a", "href", "target", "rel")
+            .addAttributes("img", "src", "alt", "title", "width", "height")
             .addAttributes(":all", "style")
-            .addProtocols("a", "href", "http", "https", "mailto");
+            .addProtocols("a", "href", "http", "https", "mailto")
+            .addProtocols("img", "src", "http", "https");
 
     private BlogHtmlSanitizer() {
     }
