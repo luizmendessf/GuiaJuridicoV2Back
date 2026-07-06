@@ -12,4 +12,6 @@ public class BlogArticleUpsertDto {
     private String imagePath;
     private String content;
     private Boolean published;
+    private String category;
+    private String subcategory;
 }

@@ -14,5 +14,7 @@ public class BlogArticleSummaryDto {
     private String slug;
     private String imagePath;
     private Boolean published;
+    private String category;
+    private String subcategory;
     private Timestamp createdAt;
 }
