@@ -7,6 +7,7 @@ import org.guiajuridico.model.BlogArticle;
 import org.guiajuridico.model.Usuario;
 import org.guiajuridico.repository.BlogArticleRepository;
 import org.guiajuridico.repository.UsuarioRepository;
+import org.guiajuridico.util.BlogCategoryValidator;
 import org.guiajuridico.util.BlogHtmlSanitizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -77,6 +78,7 @@ public class BlogArticleService {
         article.setImagePath(isBlank(dto.getImagePath()) ? null : dto.getImagePath().trim());
         article.setContent(BlogHtmlSanitizer.sanitize(dto.getContent()));
         article.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
+        aplicarCategoria(article, dto.getCategory(), dto.getSubcategory());
         article.setAuthorUser(author);
 
         String slug = escolherSlug(dto.getSlug(), dto.getTitle());
@@ -104,6 +106,7 @@ public class BlogArticleService {
         article.setImagePath(isBlank(dto.getImagePath()) ? null : dto.getImagePath().trim());
         article.setContent(BlogHtmlSanitizer.sanitize(dto.getContent()));
         article.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
+        aplicarCategoria(article, dto.getCategory(), dto.getSubcategory());
         article.setAuthorUser(author);
 
         String slug = escolherSlug(dto.getSlug(), dto.getTitle());
@@ -134,6 +137,15 @@ public class BlogArticleService {
         if (isBlank(dto.getTitle())) throw new RuntimeException("title é obrigatório");
         if (isBlank(dto.getSubtitle())) throw new RuntimeException("subtitle é obrigatório");
         if (isBlank(dto.getContent())) throw new RuntimeException("content é obrigatório");
+        BlogCategoryValidator.validar(dto.getCategory(), dto.getSubcategory());
+    }
+
+    private void aplicarCategoria(BlogArticle article, String category, String subcategory) {
+        String categoria = category != null ? category.trim() : null;
+        String subcategoria = subcategory != null && !subcategory.isBlank() ? subcategory.trim() : null;
+        BlogCategoryValidator.validar(categoria, subcategoria);
+        article.setCategory(categoria);
+        article.setSubcategory(subcategoria);
     }
 
     private Usuario getUsuarioLogado() {
@@ -167,6 +179,8 @@ public class BlogArticleService {
         dto.setSlug(a.getSlug());
         dto.setImagePath(a.getImagePath());
         dto.setPublished(a.getPublished());
+        dto.setCategory(a.getCategory());
+        dto.setSubcategory(a.getSubcategory());
         dto.setCreatedAt(a.getCreatedAt());
         return dto;
     }
@@ -180,6 +194,8 @@ public class BlogArticleService {
         dto.setImagePath(a.getImagePath());
         dto.setContent(a.getContent());
         dto.setPublished(a.getPublished());
+        dto.setCategory(a.getCategory());
+        dto.setSubcategory(a.getSubcategory());
         dto.setCreatedAt(a.getCreatedAt());
         dto.setUpdatedAt(a.getUpdatedAt());
         return dto;

@@ -15,6 +15,8 @@ public class BlogArticleDetailDto {
     private String imagePath;
     private String content;
     private Boolean published;
+    private String category;
+    private String subcategory;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }

@@ -31,6 +31,12 @@ public class BlogArticle {
     @Column(nullable = false)
     private Boolean published = false;
 
+    @Column
+    private String category;
+
+    @Column(name = "subcategory")
+    private String subcategory;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
     @JsonIgnore
@@ -56,6 +62,10 @@ public class BlogArticle {
     public void setContent(String content) { this.content = content; }
     public Boolean getPublished() { return published; }
     public void setPublished(Boolean published) { this.published = published; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public String getSubcategory() { return subcategory; }
+    public void setSubcategory(String subcategory) { this.subcategory = subcategory; }
     public Usuario getAuthorUser() { return authorUser; }
     public void setAuthorUser(Usuario authorUser) { this.authorUser = authorUser; }
     public Timestamp getCreatedAt() { return createdAt; }
