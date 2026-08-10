@@ -70,9 +70,9 @@ public class SecurityConfig {
                         // Rotas de Usuário Autenticado: Qualquer usuário logado pode gerenciar seus favoritos.
                         .requestMatchers("/api/usuarios/me/**").authenticated()
 
-                        // Rotas de Organizador/Admin: Apenas usuários com essas permissões podem gerenciar vagas.
-                        .requestMatchers(HttpMethod.POST, "/api/oportunidades").hasAnyRole("ORGANIZADOR", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/oportunidades/**").hasAnyRole("ORGANIZADOR", "ADMIN")
+                        // Oportunidades: qualquer usuário logado cria/edita; só ORGANIZADOR/ADMIN exclui.
+                        .requestMatchers(HttpMethod.POST, "/api/oportunidades").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/oportunidades/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/oportunidades/**").hasAnyRole("ORGANIZADOR", "ADMIN")
 
                         // Apenas usuários com a permissão ADMIN podem acessar rotas /api/admin/**
