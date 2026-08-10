@@ -1,10 +1,14 @@
 package org.guiajuridico.service;
 
 import org.guiajuridico.model.Oportunidade;
+import org.guiajuridico.model.Usuario;
 import org.guiajuridico.repository.OportunidadeRepository;
 import org.guiajuridico.repository.OportunidadeSpecification;
+import org.guiajuridico.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +20,9 @@ public class OportunidadeService {
 
     @Autowired
     private OportunidadeRepository oportunidadeRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // Método para a listagem completa e sem filtros
     public List<Oportunidade> listarTodas() {
@@ -50,6 +57,9 @@ public class OportunidadeService {
     }
 
     public Oportunidade criarOportunidade(Oportunidade oportunidade) {
+        Usuario usuarioLogado = getUsuarioLogado();
+        oportunidade.setCriadoPor(usuarioLogado);
+        oportunidade.setAtualizadoPor(usuarioLogado);
         return oportunidadeRepository.save(oportunidade);
     }
 
@@ -62,6 +72,7 @@ public class OportunidadeService {
     }
 
     public Optional<Oportunidade> atualizarOportunidade(Integer id, Oportunidade oportunidadeAtualizada) {
+        Usuario usuarioLogado = getUsuarioLogado();
         return oportunidadeRepository.findById(id).map(oportunidadeExistente -> {
             oportunidadeExistente.setTitle(oportunidadeAtualizada.getTitle());
             oportunidadeExistente.setCompany(oportunidadeAtualizada.getCompany());
@@ -75,8 +86,18 @@ public class OportunidadeService {
             oportunidadeExistente.setOpeningDate(oportunidadeAtualizada.getOpeningDate());
             oportunidadeExistente.setClosingDate(oportunidadeAtualizada.getClosingDate());
             oportunidadeExistente.setStatus(oportunidadeAtualizada.getStatus());
+            oportunidadeExistente.setAtualizadoPor(usuarioLogado);
 
             return oportunidadeRepository.save(oportunidadeExistente);
         });
+    }
+
+    private Usuario getUsuarioLogado() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof UserDetails userDetails)) {
+            throw new RuntimeException("Usuário não autenticado");
+        }
+        return usuarioRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 }

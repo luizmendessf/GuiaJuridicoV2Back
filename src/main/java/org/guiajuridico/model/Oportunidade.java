@@ -39,13 +39,37 @@ public class Oportunidade {
     @Column(length = 2048)
     private String applicationLink;
 
-    @Column(name = "data_criacao", updatable = false, insertable = false)
+    @Column(name = "data_criacao", updatable = false)
+    @JsonIgnore
     private Timestamp dataCriacao;
+
+    @Column(name = "data_atualizacao")
+    @JsonIgnore
+    private Timestamp dataAtualizacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criado_por_id")
     @JsonIgnore
     private Usuario criadoPor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "atualizado_por_id")
+    @JsonIgnore
+    private Usuario atualizadoPor;
+
+    @PrePersist
+    protected void onCreate() {
+        Timestamp agora = new Timestamp(System.currentTimeMillis());
+        if (dataCriacao == null) {
+            dataCriacao = agora;
+        }
+        dataAtualizacao = agora;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = new Timestamp(System.currentTimeMillis());
+    }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -75,6 +99,10 @@ public class Oportunidade {
     public void setApplicationLink(String applicationLink) { this.applicationLink = applicationLink; }
     public Timestamp getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(Timestamp dataCriacao) { this.dataCriacao = dataCriacao; }
+    public Timestamp getDataAtualizacao() { return dataAtualizacao; }
+    public void setDataAtualizacao(Timestamp dataAtualizacao) { this.dataAtualizacao = dataAtualizacao; }
     public Usuario getCriadoPor() { return criadoPor; }
     public void setCriadoPor(Usuario criadoPor) { this.criadoPor = criadoPor; }
+    public Usuario getAtualizadoPor() { return atualizadoPor; }
+    public void setAtualizadoPor(Usuario atualizadoPor) { this.atualizadoPor = atualizadoPor; }
 }
