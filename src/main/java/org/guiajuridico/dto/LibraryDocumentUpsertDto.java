@@ -9,6 +9,7 @@ public class LibraryDocumentUpsertDto {
     /** Nome do arquivo no servidor (ex.: após upload) ou URL /api/pdfs/... (extraímos o nome). */
     private String pdfFilename;
     private Boolean published;
+    private String documentType;
 
     public String getTitle() {
         return title;
@@ -56,5 +57,13 @@ public class LibraryDocumentUpsertDto {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
 }

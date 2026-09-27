@@ -7,6 +7,7 @@ import org.guiajuridico.model.LibraryDocument;
 import org.guiajuridico.model.Usuario;
 import org.guiajuridico.repository.LibraryDocumentRepository;
 import org.guiajuridico.repository.UsuarioRepository;
+import org.guiajuridico.util.LibraryDocumentTypeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
@@ -95,6 +96,7 @@ public class LibraryDocumentService {
         doc.setCoverImagePath(resolverCoverImagePath(dto.getCoverImagePath(), pdfFilename, null));
         doc.setPdfFilename(pdfFilename);
         doc.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
+        doc.setDocumentType(dto.getDocumentType().trim());
         doc.setAuthorUser(author);
 
         String slug = escolherSlug(dto.getSlug(), dto.getTitle());
@@ -127,6 +129,7 @@ public class LibraryDocumentService {
         doc.setCoverImagePath(cover);
         doc.setPdfFilename(newPdf);
         doc.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
+        doc.setDocumentType(dto.getDocumentType().trim());
         doc.setAuthorUser(author);
 
         String slug = escolherSlug(dto.getSlug(), dto.getTitle());
@@ -198,6 +201,7 @@ public class LibraryDocumentService {
         if (isBlank(dto.getTitle())) throw new RuntimeException("O título é obrigatório");
         if (isBlank(dto.getDescription())) throw new RuntimeException("O subtítulo é obrigatório");
         if (isBlank(dto.getPdfFilename())) throw new RuntimeException("O PDF é obrigatório (envie o arquivo antes de salvar)");
+        LibraryDocumentTypeValidator.validar(dto.getDocumentType());
     }
 
     private String resolverPdfFilename(String raw) {
@@ -287,6 +291,7 @@ public class LibraryDocumentService {
         dto.setCoverImagePath(d.getCoverImagePath());
         dto.setPdfFilename(d.getPdfFilename());
         dto.setPublished(d.getPublished());
+        dto.setDocumentType(d.getDocumentType());
         dto.setCreatedAt(d.getCreatedAt());
         return dto;
     }
@@ -300,6 +305,7 @@ public class LibraryDocumentService {
         dto.setCoverImagePath(d.getCoverImagePath());
         dto.setPdfFilename(d.getPdfFilename());
         dto.setPublished(d.getPublished());
+        dto.setDocumentType(d.getDocumentType());
         dto.setCreatedAt(d.getCreatedAt());
         dto.setUpdatedAt(d.getUpdatedAt());
         return dto;

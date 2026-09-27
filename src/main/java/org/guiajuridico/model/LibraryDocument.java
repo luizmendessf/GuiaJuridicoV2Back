@@ -32,6 +32,9 @@ public class LibraryDocument {
     @Column(nullable = false)
     private Boolean published = false;
 
+    @Column(name = "document_type", nullable = false, length = 64)
+    private String documentType = "Outros";
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id")
     @JsonIgnore
@@ -97,6 +100,14 @@ public class LibraryDocument {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
 
     public Usuario getAuthorUser() {
