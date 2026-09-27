@@ -9,6 +9,7 @@ import org.guiajuridico.repository.BlogArticleRepository;
 import org.guiajuridico.repository.UsuarioRepository;
 import org.guiajuridico.util.BlogCategoryValidator;
 import org.guiajuridico.util.BlogHtmlSanitizer;
+import org.guiajuridico.util.BlogPublishDateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -78,6 +79,7 @@ public class BlogArticleService {
         article.setImagePath(isBlank(dto.getImagePath()) ? null : dto.getImagePath().trim());
         article.setContent(BlogHtmlSanitizer.sanitize(dto.getContent()));
         article.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
+        BlogPublishDateHelper.applyPublishedAt(article, Boolean.TRUE.equals(article.getPublished()));
         aplicarCategoria(article, dto.getCategory(), dto.getSubcategory());
         article.setAuthorUser(author);
 
@@ -106,6 +108,7 @@ public class BlogArticleService {
         article.setImagePath(isBlank(dto.getImagePath()) ? null : dto.getImagePath().trim());
         article.setContent(BlogHtmlSanitizer.sanitize(dto.getContent()));
         article.setPublished(dto.getPublished() != null ? dto.getPublished() : Boolean.FALSE);
+        BlogPublishDateHelper.applyPublishedAt(article, Boolean.TRUE.equals(article.getPublished()));
         aplicarCategoria(article, dto.getCategory(), dto.getSubcategory());
         article.setAuthorUser(author);
 
@@ -182,6 +185,7 @@ public class BlogArticleService {
         dto.setCategory(a.getCategory());
         dto.setSubcategory(a.getSubcategory());
         dto.setCreatedAt(a.getCreatedAt());
+        dto.setPublishedAt(a.getPublishedAt());
         return dto;
     }
 
@@ -198,6 +202,7 @@ public class BlogArticleService {
         dto.setSubcategory(a.getSubcategory());
         dto.setCreatedAt(a.getCreatedAt());
         dto.setUpdatedAt(a.getUpdatedAt());
+        dto.setPublishedAt(a.getPublishedAt());
         return dto;
     }
 

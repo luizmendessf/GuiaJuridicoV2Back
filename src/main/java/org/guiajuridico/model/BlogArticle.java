@@ -31,6 +31,9 @@ public class BlogArticle {
     @Column(nullable = false)
     private Boolean published = false;
 
+    @Column(name = "published_at")
+    private Timestamp publishedAt;
+
     @Column
     private String category;
 
@@ -62,6 +65,8 @@ public class BlogArticle {
     public void setContent(String content) { this.content = content; }
     public Boolean getPublished() { return published; }
     public void setPublished(Boolean published) { this.published = published; }
+    public Timestamp getPublishedAt() { return publishedAt; }
+    public void setPublishedAt(Timestamp publishedAt) { this.publishedAt = publishedAt; }
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
     public String getSubcategory() { return subcategory; }

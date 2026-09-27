@@ -17,4 +17,5 @@ public class BlogArticleSummaryDto {
     private String category;
     private String subcategory;
     private Timestamp createdAt;
+    private Timestamp publishedAt;
 }
