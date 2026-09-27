@@ -11,6 +11,7 @@ public class LibraryDocumentDetailDto {
     private String coverImagePath;
     private String pdfFilename;
     private Boolean published;
+    private String documentType;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -68,6 +69,14 @@ public class LibraryDocumentDetailDto {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
 
     public Timestamp getCreatedAt() {
